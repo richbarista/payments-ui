@@ -5,9 +5,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function Header() {
   return (
-    <Navbar bg="warning" expand="lg">
+    <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">Payments Application</Navbar.Brand>
+        <Navbar.Brand href="#home"><img src="https://www.allstate.com/dist/content-client-react-app/static/media/logo-large.cca8060d.svg" width="200" alt="" class="d-inline-block align-middle mr-2" /></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
