@@ -3,16 +3,16 @@ import TableItem from "./TableItem";
 import { getAllPayments } from "../data/DataFunctions";
 import { useState } from "react";
 
-<select name="cars" id="cars">
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-</select>;
-
 const FullTable = () => {
   const items = getAllPayments();
-  console.log(items);
+
+  const countries = items.map((item, index) => {
+    return item.country;
+  });
+
+  const uniqueCountries = countries.filter(
+    (country, index) => countries.indexOf(country) === index
+  );
 
   const [input, setInput] = useState("");
   return (
@@ -20,14 +20,20 @@ const FullTable = () => {
       <select
         onChange={(event) => setInput(event.target.value)}
         name="countries"
+        className="form-select form-select-sm"
       >
-        <option value="">Choose Country</option>
-        {items
-          .filter((item, index) => items.indexOf(item) === index)
-          .map((item) => {
-            return <option value={item.country}>{item.country}</option>;
-          })}
+        <option key={uniqueCountries.length} value="">
+          Choose Country
+        </option>
+        {uniqueCountries.map((eachCountry, index) => {
+          return (
+            <option key={index} value={eachCountry}>
+              {eachCountry}
+            </option>
+          );
+        })}
       </select>
+      <br></br>
       <Table striped bordered hover>
         <thead>
           <tr>
