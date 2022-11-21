@@ -1,27 +1,68 @@
-import Table from 'react-bootstrap/Table';
-import TableItem from './TableItem';
+import Table from "react-bootstrap/Table";
+import TableItem from "./TableItem";
+import { getAllPayments } from "../data/DataFunctions";
+import { useState } from "react";
+
+<select name="cars" id="cars">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="mercedes">Mercedes</option>
+  <option value="audi">Audi</option>
+</select>;
 
 const FullTable = () => {
+  const items = getAllPayments();
+  console.log(items);
+
+  const [input, setInput] = useState("");
   return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Date</th>
-          <th>Country</th>
-          <th>Currency</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <TableItem id="101" date="2017-01-31" country="USA" currency="USD" amount="160" />
-        <TableItem id="102" date="2016-01-22" country="FRA" currency="EUR" amount="160" />
-        <TableItem id="103" date="2019-07-07" country="SWE" currency="EUR" amount="160" />
-        <TableItem id="104" date="2020-04-21" country="USA" currency="USD" amount="160" />
-        <TableItem id="105" date="2017-05-14" country="USA" currency="USD" amount="160" />
-      </tbody>
-    </Table>
+    <>
+      <select
+        onChange={(event) => setInput(event.target.value)}
+        name="countries"
+      >
+        <option value="">Choose Country</option>
+        {items
+          .filter((item, index) => items.indexOf(item) === index)
+          .map((item) => {
+            return <option value={item.country}>{item.country}</option>;
+          })}
+      </select>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Country</th>
+            <th>Currency</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items
+            .filter((item, index) => {
+              if (input === "") {
+                return item;
+              } else if (item.country === input) {
+                return item;
+              }
+            })
+            .map((item, index) => {
+              return (
+                <TableItem
+                  key={item.index}
+                  id={item.id}
+                  date={item.date}
+                  country={item.country}
+                  currency={item.currency}
+                  amount={item.amount}
+                />
+              );
+            })}
+        </tbody>
+      </Table>
+    </>
   );
-}
+};
 
 export default FullTable;
