@@ -1,30 +1,71 @@
 import Table from "react-bootstrap/Table";
 import TableItem from "./TableItem";
-import { getAllPayments } from "../data/DataFunctions";
-import { useState } from "react";
+import { getAllPayments, getAllPaymentsAxios, getAllPaymentsFetch, getAllCountriesAxios, getAllPaymentsForCountryAxios } from "../data/DataFunctions";
+import { useState, useEffect } from "react";
 
 const FullTable = () => {
-  const items = getAllPayments();
-
-  const countries = items.map((item, index) => {
-    return item.country;
-  });
-
-  const uniqueCountries = countries.filter(
-    (country, index) => countries.indexOf(country) === index
-  );
-
+  const headers = new Headers({"Accept" : "application/json"})
+  const [items,setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
+  const [uniqueCountries, setUniqueCountries] = useState([]);
   const [input, setInput] = useState("");
-  return (
-    <>
-      <select
-        onChange={(event) => setInput(event.target.value)}
+
+  useEffect(() => {
+    loadCountryData()
+  }, [])
+  
+  useEffect(() => {
+    input !== "" && loadData()
+  }, [input])
+
+  const loadData = () => {
+    getAllPaymentsForCountryAxios(input)
+      .then((response) => {
+      if (response.status === 200) {
+        setItems(response.data)
+        setIsLoading(false)
+      } else {
+        console.log("somethings wrong, response.status")
+      }
+    })
+    .catch((error) => {
+      console.log("something went wrong", error)
+    })
+  }
+
+  const loadCountryData = () => {
+    getAllCountriesAxios()
+      .then((response) => {
+      if (response.status === 200) {
+        setUniqueCountries(response.data)
+        setIsLoading(false)
+        
+      } else {
+        console.log("somethings wrong, response.status")
+      }
+    })
+    .catch((error) => {
+      console.log("something went wrong", error)
+    })
+  }
+  
+
+   return (
+    <> 
+      {!isLoading && <select
+        onChange={(event) => {
+          setInput(event.target.value)
+        }}
         name="countries"
         className="form-select form-select-sm"
       >
-        <option key={uniqueCountries.length} value="">
+        {input === "" ? <option key={uniqueCountries.length} value="">
           Choose Country
-        </option>
+        </option> :
+        <option key={uniqueCountries.length} value="" disabled={true}>
+        Choose Country
+      </option>
+        }
         {uniqueCountries.map((eachCountry, index) => {
           return (
             <option key={index} value={eachCountry}>
@@ -32,11 +73,12 @@ const FullTable = () => {
             </option>
           );
         })}
-      </select>
+      </select>}
       <br></br>
-      <Table striped bordered hover>
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && <Table striped bordered hover>
         <thead>
-          <tr>
+          <tr key={items.length}>
             <th>Id</th>
             <th>Date</th>
             <th>Country</th>
@@ -46,17 +88,10 @@ const FullTable = () => {
         </thead>
         <tbody>
           {items
-            .filter((item, index) => {
-              if (input === "") {
-                return item;
-              } else if (item.country === input) {
-                return item;
-              }
-            })
             .map((item, index) => {
               return (
                 <TableItem
-                  key={item.index}
+                  key={index}
                   id={item.id}
                   date={item.date}
                   country={item.country}
@@ -66,7 +101,7 @@ const FullTable = () => {
               );
             })}
         </tbody>
-      </Table>
+      </Table>}
     </>
   );
 };

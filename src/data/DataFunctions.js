@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const getAllPayments = () => {
     return [
         {id: 101, amount: 160, country: "USA", currency: "USD", date: "2017-01-31", order_id:"21216652", tax_code: 0, tax_rate: 0, type: "SALE"},
@@ -13,4 +15,36 @@ export const getAllPayments = () => {
         {id: 111, amount: -150, country: "SWE", currency: "EUR", date: "2017-02-01", order_id:"21216662", tax_code: 19, tax_rate: 0.25, type: "Refund"},
         {id: 112, amount: 600, country: "USA", currency: "USD", date: "2017-02-02", order_id:"21216663", tax_code: 0, tax_rate: 0, type: "SALE"}
     ]
+}
+
+const headers = new Headers({"Accept" : "application/json"})
+
+export const getAllPaymentsFetch = () => {
+    return fetch("http://localhost:8080/api/payment", {
+        method: "GET",
+        headers: headers
+      })
+}
+
+export const getAllPaymentsAxios = () => {
+    return axios({url : "http://localhost:8080/api/payment",
+            method: "GET", 
+            headers: {"Accept" : "application/json"}
+            })
+}
+
+export const getAllCountriesAxios = () => {
+    return axios({url : "http://localhost:8080/api/country",
+            method: "GET", 
+            headers: {"Accept" : "application/json"}
+            })
+}
+
+export const getAllPaymentsForCountryAxios = (country) => {
+    const url = `http://localhost:8080/api/payment/?country=${country}`
+    console.log(url)
+    return axios({url : url,
+            method: "GET", 
+            headers: {"Accept" : "application/json"}
+            })
 }
